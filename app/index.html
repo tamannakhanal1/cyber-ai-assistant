@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(22, 27, 45, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.1),
+                        0 0 40px rgba(138, 43, 226, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8a2be2 0%, #00d4ff 100%);
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 255, 255, 0.03) 2px,
+                rgba(255, 255, 255, 0.03) 4px
+            );
+            animation: scan 10s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .status {
+            position: relative;
+            z-index: 1;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .chatbox {
+            height: 500px;
+            overflow-y: auto;
+            padding: 30px;
+            background: rgba(10, 14, 39, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .chatbox::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chatbox::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chatbox::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #8a2be2, #00d4ff);
+            border-radius: 4px;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .message.user .avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .message.ai .avatar {
+            background: linear-gradient(135deg, #00d4ff 0%, #8a2be2 100%);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            line-height: 1.5;
+            font-size: 15px;
+            position: relative;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.ai .message-content {
+            background: rgba(0, 212, 255, 0.1);
+            color: #e0e0e0;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 8px;
+            padding: 15px 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: typing 1.4s ease-in-out infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .input-area {
+            padding: 25px;
+            background: rgba(22, 27, 45, 0.8);
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        #userInput {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #userInput::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        #userInput:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        #sendBtn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #8a2be2 0%, #00d4ff 100%);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+        }
+
+        #sendBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(138, 43, 226, 0.6);
+        }
+
+        #sendBtn:active {
+            transform: translateY(0);
+        }
+
+        #sendBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 40px 20px;
+        }
+
+        .welcome-message h2 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .error-message {
+            background: rgba(255, 82, 82, 0.1);
+            border: 1px solid rgba(255, 82, 82, 0.3);
+            color: #ff5252;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Cyber AI Assistant</h1>
+            <div class="status">
+                <span class="status-indicator"></span>
+                <span>System Online</span>
+            </div>
+        </div>
+
+        <div class="chatbox" id="chatbox">
+            <div class="welcome-message">
+                <h2>Welcome to Cyber AI</h2>
+                <p>Your intelligent assistant is ready to help. Start a conversation below!</p>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="Type your message here..."
+                autocomplete="off"
+            >
+            <button id="sendBtn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        const input = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        let isTyping = false;
+
+        // Remove welcome message on first interaction
+        function removeWelcome() {
+            const welcome = chatbox.querySelector('.welcome-message');
+            if (welcome) {
+                welcome.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => welcome.remove(), 300);
+            }
+        }
+
+        function addMessage(text, isUser = false) {
+            removeWelcome();
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar';
+            avatar.textContent = isUser ? '👤' : '🤖';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.textContent = text;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            chatbox.appendChild(messageDiv);
+            
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function showTyping() {
+            removeWelcome();
+            
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai';
+            typingDiv.id = 'typing-indicator';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar';
+            avatar.textContent = '🤖';
+            
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator';
+            indicator.innerHTML = '<span></span><span></span><span></span>';
+            
+            typingDiv.appendChild(avatar);
+            typingDiv.appendChild(indicator);
+            chatbox.appendChild(typingDiv);
+            
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function hideTyping() {
+            const typing = document.getElementById('typing-indicator');
+            if (typing) typing.remove();
+        }
+
+        async function sendMessage() {
+            const message = input.value.trim();
+            if (!message || isTyping) return;
+            
+            input.value = '';
+            addMessage(message, true);
+            
+            isTyping = true;
+            sendBtn.disabled = true;
+            showTyping();
+            
+            try {
+                const res = await fetch('https://cyber-ai-assistant.onrender.com/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                
+                const data = await res.json();
+                
+                // Simulate typing delay for better UX
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                hideTyping();
+                addMessage(data.reply || 'Sorry, I couldn\'t process that.');
+            } catch (error) {
+                hideTyping();
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'message ai';
+                
+                const avatar = document.createElement('div');
+                avatar.className = 'avatar';
+                avatar.textContent = '⚠️';
+                
+                const content = document.createElement('div');
+                content.className = 'message-content error-message';
+                content.textContent = 'Connection error. Please check if the backend is running on http://127.0.0.1:8000';
+                
+                errorMsg.appendChild(avatar);
+                errorMsg.appendChild(content);
+                chatbox.appendChild(errorMsg);
+                chatbox.scrollTop = chatbox.scrollHeight;
+            } finally {
+                isTyping = false;
+                sendBtn.disabled = false;
+                input.focus();
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Focus input on load
+        input.focus();
+    </script>
+</body>
+</html>

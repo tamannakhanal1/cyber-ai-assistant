@@ -1,0 +1,24 @@
+.chatbox { 
+  border: 1px solid #ccc; 
+  padding: 1rem; 
+  height: 400px; 
+  overflow-y: scroll; 
+  background: #f9f9f9; 
+  border-radius: 10px; 
+}
+.user { 
+  text-align: right; 
+  background-color: #007bff; 
+  color: white; 
+  padding: 0.5rem 1rem; 
+  border-radius: 15px; 
+  margin-left: auto; 
+}
+.ai { 
+  text-align: left; 
+  background-color: #28a745; 
+  color: white; 
+  padding: 0.5rem 1rem; 
+  border-radius: 15px; 
+  margin-right: auto; 
+}
