@@ -1,52 +1,37 @@
+# chain.py
 import os
-import openai
+import requests
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
-API_KEY = os.getenv("AIzaSyCDx6vuO0_yzXI3trvw3h-kwHLvZcyt73E")
+API_KEY = os.getenv("GOOGLE_API_KEY")
 
 def get_response(message: str) -> str:
-    """
-    Send user message to OpenAI (v1.x API) and return the AI's reply.
-    Handles configuration and specific API errors.
-    """
     if not API_KEY:
-        return "Configuration Error: OPENAI_API_KEY is not set. Please check your .env file."
+        return "Error: Missing GOOGLE_API_KEY in .env file."
+
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    headers = {
+        "Content-Type": "application/json",
+        "X-goog-api-key": API_KEY
+    }
+    payload = {"contents": [{"parts": [{"text": message}]}]}
 
     try:
-        # Initialize the OpenAI client with the API key
-        client = openai.OpenAI(api_key=API_KEY)
-        
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": message}],
-            max_tokens=150
-        )
-        return response.choices[0].message.content
-    
-    except openai.AuthenticationError:
-        # Catches issues like an invalid key
-        return "Authentication Error: The provided API key is invalid or lacks necessary permissions."
-    except openai.APIError as e:
-        # Catches other API-specific errors (rate limits, context window, etc.)
-        return f"API Error: An OpenAI API error occurred: {e}"
-    except Exception as e:
-        # Catches other unexpected errors (network, file system, etc.)
-        return f"An unexpected error occurred: {e}"
+        resp = requests.post(url, headers=headers, json=payload)
+        resp.raise_for_status()
+        data = resp.json()
+        candidates = data.get("candidates")
+        if candidates:
+            return candidates[0]["content"]["parts"][0]["text"]
+        return "AI did not return any content."
+    except requests.exceptions.RequestException as e:
+        return f"Error communicating with AI: {e}"
+
 
 
 if __name__ == "__main__":
-    print("--- Testing OpenAI Chain ---")
-    test_message = "Explain what a large language model is in one short paragraph."
-    print(f"User Message: {test_message}")
-
-    if API_KEY:
-        print("API Key status: Loaded.")
-    else:
-        print("API Key status: Missing. Expecting a Configuration Error.")
-
-    ai_response = get_response(test_message)
-    print("\nAI Response:")
-    print(ai_response)
-    print("----------------------------")
+    print("--- Testing Gemini Chain ---")
+    msg = "Explain what a phishing attack is."
+    print("User:", msg)
+    print("AI:", get_response(msg))
