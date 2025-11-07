@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
-API_KEY = os.getenv("OPENAI_API_KEY")
+API_KEY = os.getenv("AIzaSyCDx6vuO0_yzXI3trvw3h-kwHLvZcyt73E")
 
 def get_response(message: str) -> str:
     """
@@ -50,8 +50,3 @@ if __name__ == "__main__":
     print("\nAI Response:")
     print(ai_response)
     print("----------------------------")
-
-
-
-
-

@@ -22,7 +22,7 @@ app.add_middleware(
 )
 
 # Set OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+API_KEY = os.getenv("AIzaSyCDx6vuO0_yzXI3trvw3h-kwHLvZcyt73E")
 
 class ChatMessage(BaseModel):
     message: str
@@ -31,7 +31,7 @@ def get_ai_response(user_message: str) -> str:
     """Get response from OpenAI API"""
     try:
         # Using the updated OpenAI v1.x API
-        client = openai.OpenAI(api_key=openai.api_key)
+        client = openai.OpenAI(API_KEY=API_KEY)
         
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -100,9 +100,3 @@ async def health_check():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
-
-
-
-
