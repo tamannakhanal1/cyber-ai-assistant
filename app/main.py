@@ -31,7 +31,9 @@ async def chat(chat_message: ChatMessage):
 @app.get("/", response_class=HTMLResponse)
 async def serve_home():
     with open("app/index.html", "r") as f:
-        return HTMLResponse(f.read())
+        html_content = f.read()
+    return HTMLResponse(content=html_content)
+
 
 
 
