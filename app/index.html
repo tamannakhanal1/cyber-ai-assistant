@@ -391,54 +391,57 @@
             if (typing) typing.remove();
         }
 
-        async function sendMessage() {
-            const message = input.value.trim();
-            if (!message || isTyping) return;
-            
-            input.value = '';
-            addMessage(message, true);
-            
-            isTyping = true;
-            sendBtn.disabled = true;
-            showTyping();
-            
-            try {
-                const res = await fetch('htthttps://cyber-ai-assistant-jade.vercel.app/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message })
-                });
-                
-                const data = await res.json();
-                
-                // Simulate typing delay for better UX
-                await new Promise(resolve => setTimeout(resolve, 500));
-                
-                hideTyping();
-                addMessage(data.reply || 'Sorry, I couldn\'t process that.');
-            } catch (error) {
-                hideTyping();
-                const errorMsg = document.createElement('div');
-                errorMsg.className = 'message ai';
-                
-                const avatar = document.createElement('div');
-                avatar.className = 'avatar';
-                avatar.textContent = '⚠️';
-                
-                const content = document.createElement('div');
-                content.className = 'message-content error-message';
-                content.textContent = 'Connection error. Please check if the backend is running on http://127.0.0.1:8000';
-                
-                errorMsg.appendChild(avatar);
-                errorMsg.appendChild(content);
-                chatbox.appendChild(errorMsg);
-                chatbox.scrollTop = chatbox.scrollHeight;
-            } finally {
-                isTyping = false;
-                sendBtn.disabled = false;
-                input.focus();
-            }
-        }
+       async function sendMessage() {
+    const message = input.value.trim();
+    if (!message || isTyping) return;
+
+    input.value = '';
+    addMessage(message, true);
+
+    isTyping = true;
+    sendBtn.disabled = true;
+    showTyping();
+
+    try {
+        const res = await fetch('https://cyber-ai-assistant.onrender.com/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
+
+        if (!res.ok) throw new Error('Backend error');
+
+        const data = await res.json();
+
+        // Simulate typing delay for smoother UX
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        hideTyping();
+        addMessage(data.reply || 'Sorry, I couldn\'t process that.');
+    } catch (error) {
+        hideTyping();
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'message ai';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'avatar';
+        avatar.textContent = '⚠️';
+
+        const content = document.createElement('div');
+        content.className = 'message-content error-message';
+        content.textContent = 'Connection error. Please make sure the backend is running at http://127.0.0.1:8000';
+
+        errorMsg.appendChild(avatar);
+        errorMsg.appendChild(content);
+        chatbox.appendChild(errorMsg);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    } finally {
+        isTyping = false;
+        sendBtn.disabled = false;
+        input.focus();
+    }
+}
+
 
         sendBtn.addEventListener('click', sendMessage);
         
