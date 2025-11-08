@@ -1,9 +1,8 @@
-# main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, HTMLResponse
 from pydantic import BaseModel
-from .chain import get_response  # ✅ use our updated chain.py
+from .chain import get_response, get_coordinates  # ✅ import both functions correctly
 
 app = FastAPI()
 
@@ -28,13 +27,19 @@ async def chat(chat_message: ChatMessage):
     ai_reply = get_response(message)
     return {"reply": ai_reply, "status": "success"}
 
+@app.get("/geocode/{address}")
+async def geocode(address: str):
+    """Endpoint to convert an address to coordinates using OpenStreetMap"""
+    result = get_coordinates(address)
+    if result:
+        return {"address": address, "coordinates": result, "status": "success"}
+    return {"address": address, "error": "Could not find coordinates", "status": "fail"}
+
 @app.get("/", response_class=HTMLResponse)
 async def serve_home():
     with open("app/index.html", "r") as f:
         html_content = f.read()
     return HTMLResponse(content=html_content)
-
-
 
 
 
