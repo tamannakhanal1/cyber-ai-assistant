@@ -12,32 +12,60 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 0;
         }
 
         .container {
             width: 100%;
-            max-width: 800px;
+            height: 100vh;
             background: rgba(22, 27, 45, 0.95);
-            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.1),
-                        0 0 40px rgba(138, 43, 226, 0.1);
-            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Desktop and Tablet */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 900px;
+                height: 90vh;
+                max-height: 800px;
+                border-radius: 24px;
+                border: 1px solid rgba(0, 255, 255, 0.2);
+            }
+        }
+
+        /* Large Desktop */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1000px;
+            }
         }
 
         .header {
             background: linear-gradient(135deg, #8a2be2 0%, #00d4ff 100%);
-            padding: 25px;
+            padding: 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 768px) {
+            .header {
+                padding: 28px;
+            }
         }
 
         .header::before {
@@ -64,23 +92,35 @@
 
         .header h1 {
             color: white;
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 600;
             position: relative;
             z-index: 1;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
+        @media (min-width: 768px) {
+            .header h1 {
+                font-size: 28px;
+            }
+        }
+
         .status {
             position: relative;
             z-index: 1;
             color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
+            font-size: 13px;
             margin-top: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .status {
+                font-size: 14px;
+            }
         }
 
         .status-indicator {
@@ -97,17 +137,31 @@
         }
 
         .chatbox {
-            height: 500px;
+            flex: 1;
             overflow-y: auto;
-            padding: 30px;
+            overflow-x: hidden;
+            padding: 16px;
             background: rgba(10, 14, 39, 0.5);
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .chatbox {
+                padding: 30px;
+                gap: 20px;
+            }
         }
 
         .chatbox::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
+        }
+
+        @media (min-width: 768px) {
+            .chatbox::-webkit-scrollbar {
+                width: 8px;
+            }
         }
 
         .chatbox::-webkit-scrollbar-track {
@@ -122,8 +176,14 @@
         .message {
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            gap: 10px;
             animation: slideIn 0.3s ease-out;
+        }
+
+        @media (min-width: 768px) {
+            .message {
+                gap: 12px;
+            }
         }
 
         @keyframes slideIn {
@@ -142,14 +202,22 @@
         }
 
         .avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             flex-shrink: 0;
+        }
+
+        @media (min-width: 768px) {
+            .avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
         }
 
         .message.user .avatar {
@@ -163,12 +231,29 @@
         }
 
         .message-content {
-            max-width: 70%;
-            padding: 15px 20px;
-            border-radius: 18px;
+            max-width: calc(100% - 50px);
+            padding: 12px 16px;
+            border-radius: 16px;
             line-height: 1.5;
-            font-size: 15px;
+            font-size: 14px;
             position: relative;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        @media (min-width: 768px) {
+            .message-content {
+                max-width: 70%;
+                padding: 15px 20px;
+                border-radius: 18px;
+                font-size: 15px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .message-content {
+                max-width: 65%;
+            }
         }
 
         .message.user .message-content {
@@ -187,12 +272,19 @@
         .typing-indicator {
             display: flex;
             gap: 8px;
-            padding: 15px 20px;
+            padding: 12px 16px;
             background: rgba(0, 212, 255, 0.1);
-            border-radius: 18px;
+            border-radius: 16px;
             border-bottom-left-radius: 4px;
             width: fit-content;
             border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        @media (min-width: 768px) {
+            .typing-indicator {
+                padding: 15px 20px;
+                border-radius: 18px;
+            }
         }
 
         .typing-indicator span {
@@ -223,24 +315,40 @@
         }
 
         .input-area {
-            padding: 25px;
-            background: rgba(22, 27, 45, 0.8);
+            padding: 16px;
+            background: rgba(22, 27, 45, 0.9);
             border-top: 1px solid rgba(0, 255, 255, 0.2);
             display: flex;
-            gap: 15px;
+            gap: 10px;
             align-items: center;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 768px) {
+            .input-area {
+                padding: 20px 25px;
+                gap: 15px;
+            }
         }
 
         #userInput {
             flex: 1;
-            padding: 15px 20px;
+            padding: 12px 18px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 25px;
+            border-radius: 22px;
             color: white;
-            font-size: 15px;
+            font-size: 14px;
             outline: none;
             transition: all 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            #userInput {
+                padding: 15px 20px;
+                border-radius: 25px;
+                font-size: 15px;
+            }
         }
 
         #userInput::placeholder {
@@ -254,16 +362,25 @@
         }
 
         #sendBtn {
-            padding: 15px 30px;
+            padding: 12px 24px;
             background: linear-gradient(135deg, #8a2be2 0%, #00d4ff 100%);
             border: none;
-            border-radius: 25px;
+            border-radius: 22px;
             color: white;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+            white-space: nowrap;
+        }
+
+        @media (min-width: 768px) {
+            #sendBtn {
+                padding: 15px 30px;
+                border-radius: 25px;
+                font-size: 15px;
+            }
         }
 
         #sendBtn:hover {
@@ -284,19 +401,52 @@
         .welcome-message {
             text-align: center;
             color: rgba(255, 255, 255, 0.6);
-            padding: 40px 20px;
+            padding: 30px 20px;
+        }
+
+        @media (min-width: 768px) {
+            .welcome-message {
+                padding: 50px 20px;
+            }
         }
 
         .welcome-message h2 {
             color: #00d4ff;
             margin-bottom: 10px;
-            font-size: 24px;
+            font-size: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .welcome-message h2 {
+                font-size: 24px;
+            }
+        }
+
+        .welcome-message p {
+            font-size: 14px;
+        }
+
+        @media (min-width: 768px) {
+            .welcome-message p {
+                font-size: 15px;
+            }
         }
 
         .error-message {
             background: rgba(255, 82, 82, 0.1);
             border: 1px solid rgba(255, 82, 82, 0.3);
             color: #ff5252;
+        }
+
+        /* Touch improvements for mobile */
+        @media (max-width: 767px) {
+            #sendBtn, #userInput {
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            input {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
         }
     </style>
 </head>
@@ -334,7 +484,6 @@
         const sendBtn = document.getElementById('sendBtn');
         let isTyping = false;
 
-        // Remove welcome message on first interaction
         function removeWelcome() {
             const welcome = chatbox.querySelector('.welcome-message');
             if (welcome) {
@@ -391,57 +540,55 @@
             if (typing) typing.remove();
         }
 
-       async function sendMessage() {
-    const message = input.value.trim();
-    if (!message || isTyping) return;
+        async function sendMessage() {
+            const message = input.value.trim();
+            if (!message || isTyping) return;
 
-    input.value = '';
-    addMessage(message, true);
+            input.value = '';
+            addMessage(message, true);
 
-    isTyping = true;
-    sendBtn.disabled = true;
-    showTyping();
+            isTyping = true;
+            sendBtn.disabled = true;
+            showTyping();
 
-    try {
-        const res = await fetch('https://cyber-ai-assistant.onrender.com/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message })
-        });
+            try {
+                const res = await fetch('https://cyber-ai-assistant.onrender.com/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
 
-        if (!res.ok) throw new Error('Backend error');
+                if (!res.ok) throw new Error('Backend error');
 
-        const data = await res.json();
+                const data = await res.json();
 
-        // Simulate typing delay for smoother UX
-        await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 500));
 
-        hideTyping();
-        addMessage(data.reply || 'Sorry, I couldn\'t process that.');
-    } catch (error) {
-        hideTyping();
-        const errorMsg = document.createElement('div');
-        errorMsg.className = 'message ai';
+                hideTyping();
+                addMessage(data.reply || 'Sorry, I couldn\'t process that.');
+            } catch (error) {
+                hideTyping();
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'message ai';
 
-        const avatar = document.createElement('div');
-        avatar.className = 'avatar';
-        avatar.textContent = '⚠️';
+                const avatar = document.createElement('div');
+                avatar.className = 'avatar';
+                avatar.textContent = '⚠️';
 
-        const content = document.createElement('div');
-        content.className = 'message-content error-message';
-        content.textContent = 'Connection error. Please make sure the backend is running at http://127.0.0.1:8000';
+                const content = document.createElement('div');
+                content.className = 'message-content error-message';
+                content.textContent = 'Connection error. Please check your backend connection.';
 
-        errorMsg.appendChild(avatar);
-        errorMsg.appendChild(content);
-        chatbox.appendChild(errorMsg);
-        chatbox.scrollTop = chatbox.scrollHeight;
-    } finally {
-        isTyping = false;
-        sendBtn.disabled = false;
-        input.focus();
-    }
-}
-
+                errorMsg.appendChild(avatar);
+                errorMsg.appendChild(content);
+                chatbox.appendChild(errorMsg);
+                chatbox.scrollTop = chatbox.scrollHeight;
+            } finally {
+                isTyping = false;
+                sendBtn.disabled = false;
+                input.focus();
+            }
+        }
 
         sendBtn.addEventListener('click', sendMessage);
         
@@ -452,7 +599,6 @@
             }
         });
 
-        // Focus input on load
         input.focus();
     </script>
 </body>
